@@ -1,91 +1,80 @@
-const readline = require('readline');
+const readline = require("readline");
 
-// Employee data stored in memory (array of objects)
-let employees = [];
+// Initial employee list
+let employees = [
+  { name: "Alice", id: "E101" },
+  { name: "Bob", id: "E102" },
+  { name: "Charlie", id: "E103" }
+];
 
-// Setup readline interface
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-// Menu display
 function showMenu() {
-  console.log("\n=== Employee Management System ===");
+  console.log("\nEmployee Management System");
   console.log("1. Add Employee");
   console.log("2. List Employees");
   console.log("3. Remove Employee");
   console.log("4. Exit");
-  rl.question("Choose an option: ", handleMenu);
-}
 
-// Handle menu choices
-function handleMenu(option) {
-  switch (option) {
-    case "1":
-      addEmployee();
-      break;
-    case "2":
-      listEmployees();
-      break;
-    case "3":
-      removeEmployee();
-      break;
-    case "4":
-      console.log("Exiting... Goodbye!");
-      rl.close();
-      break;
-    default:
-      console.log("Invalid option. Please try again.");
-      showMenu();
-  }
-}
-
-// Add a new employee
-function addEmployee() {
-  rl.question("Enter Employee ID: ", (id) => {
-    // Check for duplicate ID
-    if (employees.some(emp => emp.id === id)) {
-      console.log("❌ Employee with this ID already exists!");
-      showMenu();
-      return;
+  rl.question("Enter your choice: ", (choice) => {
+    switch (choice.trim()) {
+      case "1":
+        addEmployee();
+        break;
+      case "2":
+        listEmployees();
+        break;
+      case "3":
+        removeEmployee();
+        break;
+      case "4":
+        console.log("Exiting...");
+        rl.close();
+        break;
+      default:
+        console.log("Invalid choice. Please try again.");
+        showMenu();
     }
+  });
+}
 
-    rl.question("Enter Employee Name: ", (name) => {
-      employees.push({ id, name });
-      console.log(`✅ Employee ${name} (ID: ${id}) added successfully!`);
+function addEmployee() {
+  rl.question("Enter employee name: ", (name) => {
+    rl.question("Enter employee ID: ", (id) => {
+      employees.push({ name, id });
+      console.log(`Employee ${name} (ID: ${id}) added successfully.`);
       showMenu();
     });
   });
 }
 
-// List all employees
 function listEmployees() {
   if (employees.length === 0) {
     console.log("No employees found.");
   } else {
-    console.log("\n--- Employee List ---");
+    console.log("\nEmployee List:");
     employees.forEach((emp, index) => {
-      console.log(`${index + 1}. ID: ${emp.id}, Name: ${emp.name}`);
+      console.log(`${index + 1}. Name: ${emp.name}, ID: ${emp.id}`);
     });
   }
   showMenu();
 }
 
-// Remove an employee
 function removeEmployee() {
-  rl.question("Enter Employee ID to remove: ", (id) => {
-    const index = employees.findIndex(emp => emp.id === id);
-
+  rl.question("Enter employee ID to remove: ", (id) => {
+    const index = employees.findIndex((emp) => emp.id === id);
     if (index !== -1) {
-      const removed = employees.splice(index, 1);
-      console.log(`🗑️ Employee ${removed[0].name} (ID: ${removed[0].id}) removed successfully!`);
+      const removed = employees.splice(index, 1)[0];
+      console.log(`Employee ${removed.name} (ID: ${removed.id}) removed successfully.`);
     } else {
-      console.log("❌ Employee not found.");
+      console.log(`Employee with ID ${id} not found.`);
     }
     showMenu();
   });
 }
 
-// Start the application
+// Start app
 showMenu();
